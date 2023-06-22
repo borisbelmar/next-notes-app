@@ -1,8 +1,10 @@
-import Button from '@/components/Button'
 import SectionContainer from '@/components/SectionContainer'
-import Link from 'next/link'
+import dynamic from 'next/dynamic'
 
 export default function Home () {
+  // This is a dynamic import, it will only be loaded on the client side
+  const HomeButton = dynamic(async () => await import('@/components/HomeButton'), { ssr: false })
+
   return (
     <main>
       <SectionContainer className="py-20 text-center">
@@ -12,11 +14,7 @@ export default function Home () {
         <p className="text-xl mb-8">
           Aplicación para guardar todas tus notas
         </p>
-        <Link href="/notes">
-          <Button>
-            Entrar a la aplicación
-          </Button>
-        </Link>
+        <HomeButton />
       </SectionContainer>
     </main>
   )

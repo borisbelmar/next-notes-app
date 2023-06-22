@@ -1,6 +1,6 @@
 'use client'
 
-import type { Note } from '@/@types/Note'
+import type { NoteDTO } from '@/@types/Note'
 import { formatDistance } from 'date-fns'
 import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
 import NoteFormModal from './NoteFormModal'
@@ -8,10 +8,11 @@ import DeleteConfirmationModal from './NoteDeleteModal'
 import useNoteActions from '../hooks/useNoteActions'
 
 interface NoteItemProps {
-  note: Note
+  note: NoteDTO
+  onRefetch: () => Promise<void>
 }
 
-export default function NoteItem ({ note }: NoteItemProps) {
+export default function NoteItem ({ note, onRefetch }: NoteItemProps) {
   const {
     editingNote,
     handleEdit,
@@ -20,10 +21,11 @@ export default function NoteItem ({ note }: NoteItemProps) {
     isDeleteModalOpen,
     handleDeleteModalClose,
     handleDeleteConfirm
-  } = useNoteActions({ note })
+  } = useNoteActions({ note, onRefetch })
+
   return (
     <>
-      <article className="bg-gray-900 shadow rounded overflow-hidden">
+      <article className="bg-gray-900 shadow rounded overflow-hidden flex flex-col justify-between">
         <div className="bg-primary-700 px-4 py-2">
           <h2 className="text-lg font-bold">
             {note.title}
@@ -53,7 +55,8 @@ export default function NoteItem ({ note }: NoteItemProps) {
       <NoteFormModal
         isModalOpen={!!editingNote}
         onModalClose={handleModalClose}
-        editingNote={editingNote as Note}
+        editingNote={editingNote as NoteDTO}
+        onRefetch={onRefetch}
       />
       <DeleteConfirmationModal
         isModalOpen={isDeleteModalOpen}

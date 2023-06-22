@@ -1,22 +1,26 @@
+'use client'
+
 import Button from '@/components/Button'
 import Input from '@/components/Input'
 import TextArea from '@/components/TextArea'
-import useNoteCreationForm from '../hooks/useNoteCreationForm'
-import type { Note } from '@/@types/Note'
+import useNoteForm from '../hooks/useNoteForm'
+import type { NoteDTO } from '@/@types/Note'
 
-interface NoteCreationFormProps {
+interface NoteFormProps {
   onCancel: () => void
-  editingNote?: Note
+  editingNote?: NoteDTO
+  onRefetch: () => Promise<void>
 }
 
-export default function NoteForm ({ onCancel, editingNote }: NoteCreationFormProps) {
+export default function NoteForm ({ onCancel, editingNote, onRefetch }: NoteFormProps) {
   const {
     register,
     handleSubmit,
     errors
-  } = useNoteCreationForm({
+  } = useNoteForm({
     onClose: onCancel,
-    editingNote
+    editingNote,
+    onRefetch
   })
 
   return (

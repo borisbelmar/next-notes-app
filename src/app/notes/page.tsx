@@ -1,39 +1,28 @@
-import type { Note } from '@/@types/Note'
+import { type NoteDTO } from '@/@types/Note'
 import NoteList from './components/NoteList'
-import NoteListHeader from './components/NoteListHeader'
+import { cookies } from 'next/headers'
 
-const notesMock: Note[] = [
-  {
-    id: '1',
-    title: 'Nota 1',
-    createdAt: '2021-10-01T00:00:00.000Z',
-    updatedAt: '2021-10-01T00:00:00.000Z',
-    content: 'lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.',
-    userId: '1'
-  },
-  {
-    id: '2',
-    title: 'Nota 2',
-    createdAt: '2021-10-01T00:00:00.000Z',
-    updatedAt: '2021-10-01T00:00:00.000Z',
-    content: 'lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.',
-    userId: '2'
-  },
-  {
-    id: '3',
-    title: 'Nota 3',
-    createdAt: '2021-10-01T00:00:00.000Z',
-    updatedAt: '2021-10-01T00:00:00.000Z',
-    content: 'lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.',
-    userId: '3'
-  }
-]
+export default async function NotesPage () {
+  const token = cookies().get('token')?.value ?? ''
+  const response = await fetch('http://localhost:3000/api/notes', {
+    next: {
+      revalidate: 60
+    },
+    headers: {
+      Cookie: `token=${token}`
+    }
+  })
 
-export default function NotesPage () {
+  const notes: NoteDTO[] = await response.json()
+
+  const user = JSON.parse(cookies().get('user')?.value ?? '{}')
+
   return (
     <main>
-      <NoteListHeader username="fulanito" />
-      <NoteList notes={notesMock} />
+      <NoteList
+        notesFromSsr={notes}
+        username={user.username}
+      />
     </main>
   )
 }

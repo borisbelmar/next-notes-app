@@ -1,17 +1,21 @@
+'use client'
+
 import Modal from '@/components/Modal'
 import NoteCreationForm from './NoteForm'
-import type { Note } from '@/@types/Note'
+import type { NoteDTO } from '@/@types/Note'
 
 interface NoteModalProps {
   isModalOpen: boolean
   onModalClose: () => void
-  editingNote?: Note
+  editingNote?: NoteDTO
+  onRefetch: () => Promise<void>
 }
 
 export default function NoteFormModal ({
   isModalOpen,
   onModalClose,
-  editingNote
+  editingNote,
+  onRefetch
 }: NoteModalProps) {
   return (
     <Modal
@@ -19,7 +23,11 @@ export default function NoteFormModal ({
       isModalOpen={isModalOpen}
       onModalClose={onModalClose}
     >
-      <NoteCreationForm onCancel={onModalClose} editingNote={editingNote} />
+      <NoteCreationForm
+        onCancel={onModalClose}
+        editingNote={editingNote}
+        onRefetch={onRefetch}
+      />
     </Modal>
   )
 }

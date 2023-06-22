@@ -5,12 +5,15 @@ import SectionContainer from '@/components/SectionContainer'
 import { PlusIcon } from '@heroicons/react/24/outline'
 import { Fragment, useState } from 'react'
 import NoteCreateModal from './NoteFormModal'
+import useLogout from '@/hooks/useLogout'
 
 interface NoteListHeaderProps {
   username: string
+  onRefetch: () => Promise<void>
 }
 
-export default function NoteListHeader ({ username }: NoteListHeaderProps) {
+export default function NoteListHeader ({ username, onRefetch }: NoteListHeaderProps) {
+  const logout = useLogout()
   const [isModalOpen, setModalOpen] = useState(false)
 
   const handleModalOpen = () => {
@@ -33,6 +36,11 @@ export default function NoteListHeader ({ username }: NoteListHeaderProps) {
           <p className="text-xl">
             Aquí puedes ver todas tus notas
           </p>
+          <p className="text-md mt-2">
+            <button className="text-primary-500 hover:underline" type="button" onClick={logout}>
+              Cerrar sesión
+            </button>
+          </p>
         </div>
         <div>
           <Button className="flex items-center" onClick={handleModalOpen}>
@@ -41,7 +49,11 @@ export default function NoteListHeader ({ username }: NoteListHeaderProps) {
           </Button>
         </div>
       </SectionContainer>
-      <NoteCreateModal isModalOpen={isModalOpen} onModalClose={handleModalClose} />
+      <NoteCreateModal
+        isModalOpen={isModalOpen}
+        onModalClose={handleModalClose}
+        onRefetch={onRefetch}
+      />
     </>
   )
 }
