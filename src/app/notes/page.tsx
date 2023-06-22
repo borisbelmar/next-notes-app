@@ -1,10 +1,13 @@
 import { type NoteDTO } from '@/@types/Note'
 import NoteList from './components/NoteList'
-import { cookies } from 'next/headers'
+import { cookies, headers } from 'next/headers'
 
 export default async function NotesPage () {
   const token = cookies().get('token')?.value ?? ''
-  const response = await fetch('http://localhost:3000/api/notes', {
+  const fullUrl = headers().get('referer') ?? ''
+  const fetchUrl = new URL('/api/notes', fullUrl)
+
+  const response = await fetch(fetchUrl.href, {
     next: {
       revalidate: 60
     },
